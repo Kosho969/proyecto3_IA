@@ -1,0 +1,23 @@
+{
+  "name": "proyecto3_ia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kosho969/proyecto3_IA.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kosho969/proyecto3_IA/issues"
+  },
+  "homepage": "https://github.com/Kosho969/proyecto3_IA#readme",
+  "dependencies": {
+    "prompt-sync": "^4.1.6",
+    "socket.io-client": "^2.1.0"
+  }
+}
