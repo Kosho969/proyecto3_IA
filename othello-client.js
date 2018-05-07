@@ -1,5 +1,6 @@
 'use strict';
 
+var BoardState = require('./board-state');
 class OthelloClient {
     constructor()
     {
@@ -7,7 +8,11 @@ class OthelloClient {
 
     getMovement(boardState, playerTurnId)
     {
-
+        var board = new BoardState(boardState);
+        var validMoves = board.getValidMovements(playerTurnId)
+        var oneMove = validMoves[0]
+        var movement = board.getIntFromXY(oneMove[0], oneMove[1]);
+        return movement
     }
 }
 

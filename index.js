@@ -1,4 +1,5 @@
 var BoardState = require('./board-state');
+var OthelloClient = require('./othello-client')
 
 var initState =
 [
@@ -113,13 +114,13 @@ socketClient.on('ready', function(data) {
   console.log(data.board)
   console.log(data);
   console.log("\nRequesting move...");
-  var boardState = new BoardState(data.board);
-  var validMoves = boardState.getValidMovements(data.player_turn_id)
-  var oneMove = validMoves[0]
+  var othello_client = new OthelloClient();
+  
 
   // data.player_turn_id: 1 (negro), 2 (blanco)
 
-  var movement = boardState.getIntFromXY(oneMove[0], oneMove[1]);
+  var movement = othello_client.getMovement(data.board, data.player_turn_id)
+  console.log ('Client Works!!')
   console.log('move: '+movement)
 
   // while (!validateHumanPosition(movement)){
