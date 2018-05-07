@@ -1,10 +1,50 @@
+var BoardState = require('./board-state');
+
+var initState =
+[
+0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 2, 1, 0, 0, 0,
+0, 0, 0, 1, 2, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0
+];
+
+
+
+// console.log(boardState.getValidMovements(1));
+
+//boardState.getBoardForMovement(2, 5, 3)
+
+// boardState.getValidMovements(2).forEach(function (movement) {
+//   console.log(movement);
+// });
+
+// for (position in ) {
+//   console.log(position);
+// }
+
+
+
+
+
+
+
+
 var prompt = require('prompt-sync')();
+console.log(getRndInteger(0,63))
 
 var tileRep = ['_', 'X', 'O'],
     N = 8;
 
 function randInt(a, b) {
   return parseInt(Math.floor(Math.random() * (b - a) + b));
+}
+
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
 function ix(row, col) {
@@ -45,7 +85,7 @@ function validateHumanPosition(position) {
 console.log('Attempting connect');
 
 var socketClient = require('socket.io-client')('http://localhost:3000'),
-    userName = 'Ghof_' + randInt(0, 10000),
+    userName = 'Koch'+ randInt(0, 63),
     tournamentID = 12;
 
 socketClient.on('connect', function() {
@@ -70,19 +110,27 @@ socketClient.on('ready', function(data) {
   // Client is about to move
   console.log("About to move. Board:\n");
   console.log(printBoardForHumans(data.board));
+  console.log(data.board)
+  console.log(data);
   console.log("\nRequesting move...");
+  var boardState = new BoardState(data.board);
+  var validMoves = boardState.getValidMovements(data.player_turn_id)
+  var oneMove = validMoves[0]
 
-  var movement = '';
+  // data.player_turn_id: 1 (negro), 2 (blanco)
 
-  while (!validateHumanPosition(movement)){
-    movement = prompt("Insert your next move (1A - 8G):");
-  }
+  var movement = boardState.getIntFromXY(oneMove[0], oneMove[1]);
+  console.log('move: '+movement)
+
+  // while (!validateHumanPosition(movement)){
+  //   //movement = prompt("Insert your next move (1A - 8G):");
+  // }
 
   socketClient.emit('play', {
     player_turn_id: data.player_turn_id,
     tournament_id: tournamentID,
     game_id: data.game_id,
-    movement: ix(parseInt(movement[0]), movement[1].toLowerCase())
+    movement: movement
   });
 });
 
