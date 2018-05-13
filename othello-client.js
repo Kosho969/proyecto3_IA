@@ -36,24 +36,11 @@ class OthelloClient
         var movement = null;
 
         var that = this;
-        board
-            .getValidMovements(this.currentPlayerColor)
-            .forEach(function(possibleMovement) {
-                console.log('Possible movement for ' + this.currentPlayerColor + ': ' + possibleMovement);
+        var validMovements = board.getValidMovements(this.currentPlayerColor);
 
-                var movementResultBoard = board.getBoardForMovement(
-                    that.currentPlayerColor,
-                    possibleMovement[0],
-                    possibleMovement[1]
-                );
-
-                var tuple = that.getMinValueMovement(
-                    movementResultBoard,
-                    currentDepth + 1,
-                    alpha,
-                    beta
-                );
-            });
+        for (var i = 0; i < validMovements.length; i++) {
+            console.log('Possible movement for ' + this.currentPlayerColor + ': ' + possibleMovement);
+        }
 
         // for possibleMovement in boardState.getValdMovemts():
         //     tuple = getMinValueMovement(
