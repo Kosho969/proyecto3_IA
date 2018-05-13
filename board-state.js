@@ -5,13 +5,16 @@ var BLACK = 1;
 var WHITE = 2;
 var tileRep = ['_', 'X', 'O'];
 
-class BoardState {
-    constructor(initialState) {
+class BoardState
+{
+    constructor(initialState)
+    {
         this.state = initialState;
         this.N = 8;
     }
 
-    getValidMovements(playerColor) {
+    getValidMovements(playerColor)
+    {
         var validMoves = [];
         for (var x = 0; x < this.N; x++) {
             for (var y = 0; y < this.N; y++) {
@@ -28,7 +31,8 @@ class BoardState {
         return validMoves;
     }
 
-    printBoardForHumans() {
+    printBoardForHumans()
+    {
         var result = '    A  B  C  D  E  F  G  H';
 
         for (var i = 0; i < this.state.length; i++){
@@ -42,7 +46,8 @@ class BoardState {
         console.log(result);
     }
 
-    getBoardForMovement(playerColor, playX, playY) {
+    getBoardForMovement(playerColor, playX, playY)
+    {
         var newState = this.state.slice();
 
         var positionsToFlip = this.getTilePositionsToFlip(playerColor, [playX, playY]);
@@ -211,6 +216,43 @@ class BoardState {
         });
 
         return tilePositionsToFlip;
+    }
+
+    /**
+     * Porcentaje de piezas de playerColor con respecto al total.
+     *
+     * PRE:
+     * Positive values mean blacks are ahead.
+     * Negative values mean whites are ahead.
+     *
+     */
+    getPieceDifference(playerColor) {
+        var blacksCount = this.state
+            .filter(function(element) { return element === BLACK; })
+            .length;
+
+        var whitesCount = this.state
+            .filter(function(element) { return element === WHITE; })
+            .length;
+
+        var currentPlayerCount = playerColor === BLACK ? blacksCount : whitesCount;
+
+        if (whitesCount === blacksCount) {
+            return 0;
+        }
+
+        return 100 * currentPlayerCount / (blacksCount + whitesCount);
+
+        // PRE
+        // if (whitesCount > blacksCount) {
+        //     return -100 * (whitesCount / (blacksCount + whitesCount));
+        // }
+
+        // return 100 * (blacksCount / (blacksCount + whitesCount));
+    }
+
+    h() {
+        return this.getPieceDifference();
     }
 }
 
