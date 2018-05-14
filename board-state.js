@@ -241,7 +241,7 @@ class BoardState
             return 0;
         }
 
-        return 100 * currentPlayerCount / (blacksCount + whitesCount);
+        return 100.0 * currentPlayerCount / (blacksCount + whitesCount);
 
         // PRE
         // if (whitesCount > blacksCount) {
