@@ -13,7 +13,7 @@ class OthelloClient
         this.currentPlayerColor = currentPlayerColor;
     }
 
-    getMovement(boardState)
+    getMovement(boardState, playerTurnId)
     {
         var board = new BoardState(boardState);
 
@@ -47,18 +47,18 @@ class OthelloClient
         console.log(" ".repeat(currentDepth * 2) + '--- Into MAX value for currentDepth ' + currentDepth + ' and movement ' + movement);
 
         if (currentDepth === this.k) {
-            console.log(" ".repeat(currentDepth * 2) + 'returning value ' + board.h() + ' for movement: ' + movement);
+            console.log(" ".repeat(currentDepth * 2) + 'returning h value (max)' + board.h(this.getCurrentPlayerColor()) + ' for movement: ' + movement);
 
-            return [board.h(), movement];
+            return [board.h(this.getCurrentPlayerColor()), movement];
         }
 
         var value = Number.NEGATIVE_INFINITY;
-        var movement = movement;
+        var arista = null;
         var validMovements = board.getValidMovements(this.currentPlayerColor);
 
         if (validMovements.length === 0) {
             console.log(" ".repeat(currentDepth * 2) + 'No movements found');
-            board.printBoardForHumans();
+            //board.printBoardForHumans();
             console.log(board.state);
         }
 
@@ -74,7 +74,7 @@ class OthelloClient
                 possibleMovement[1]
             );
 
-            movementResultBoard.printBoardForHumans();
+            //movementResultBoard.printBoardForHumans();
 
             var tuple = this.getMinValueMovement(
                 movementResultBoard,
@@ -88,7 +88,7 @@ class OthelloClient
             // actualizar value y el movimiento
             if (tuple[0] > value) {
                 value = tuple[0];
-                movement = tuple[1];
+                movement = possibleMovement;
             }
 
             if (tuple[0] >= beta) {
@@ -110,31 +110,34 @@ class OthelloClient
         console.log(" ".repeat(currentDepth * 2) + '--- Into MIN value for currentDepth ' + currentDepth + ' and movement ' + movement);
 
         if (currentDepth === this.k) {
-            console.log(" ".repeat(currentDepth * 2) + 'returning value ' + board.h() + ' for movement: ' + movement);
+            console.log(" ".repeat(currentDepth * 2) + 'returning h value (min)' + board.h(this.getCurrentPlayerColor()) + ' for movement: ' + movement);
 
-            return [board.h(), movement];
+            return [board.h(this.getCurrentPlayerColor()), movement];
         }
 
         var value = Number.POSITIVE_INFINITY;
         var movement = movement;
-        var validMovements = board.getValidMovements(this.getOpponentPlyerColor());
+        var validMovements = board.getValidMovements(this.getOpponentPlayerColor());
 
         if (validMovements.length === 0) {
             console.log(" ".repeat(currentDepth * 2) + 'No movements found');
-            board.printBoardForHumans();
+            //board.printBoardForHumans();
             console.log(board.state);
         }
 
         for (var i = 0; i < validMovements.length; i++) {
             var possibleMovement = validMovements[i];
 
+            console.log(" ".repeat(currentDepth * 2) + '------------------------');
+            console.log(" ".repeat(currentDepth * 2) + 'Possible movement for ' + this.getOpponentPlayerColorLabel() + ': ' + possibleMovement);
+
             var movementResultBoard = board.getBoardForMovement(
-                this.getOpponentPlyerColor(),
+                this.getOpponentPlayerColor(),
                 possibleMovement[0],
                 possibleMovement[1]
             );
 
-            movementResultBoard.printBoardForHumans();
+            //movementResultBoard.printBoardForHumans();
 
             var tuple = this.getMaxValueMovement(
                 movementResultBoard,
@@ -148,7 +151,7 @@ class OthelloClient
             // actualizar value y el movimiento
             if (tuple[0] < value) {
                 value = tuple[0];
-                movement = tuple[1];
+                movement = possibleMovement;
             }
 
             if (tuple[0] <= alpha) {
@@ -165,7 +168,7 @@ class OthelloClient
         return [value, movement];
     }
 
-    getOpponentPlyerColor()
+    getOpponentPlayerColor()
     {
         return this.currentPlayerColor === BLACK ? WHITE : BLACK;
     }
@@ -178,6 +181,11 @@ class OthelloClient
     getOpponentPlayerColorLabel()
     {
         return this.currentPlayerColor === BLACK ? 'WHITE' : 'BLACK';
+    }
+
+    getCurrentPlayerColor()
+    {
+        return this.currentPlayerColor;
     }
 }
 

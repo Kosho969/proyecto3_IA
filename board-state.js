@@ -5,6 +5,10 @@ var BLACK = 1;
 var WHITE = 2;
 var tileRep = ['_', 'X', 'O'];
 
+function randInt(a, b) {
+  return parseInt(Math.floor(Math.random() * (b - a) + b));
+}
+
 class BoardState
 {
     constructor(initialState)
@@ -237,9 +241,8 @@ class BoardState
 
         var currentPlayerCount = playerColor === BLACK ? blacksCount : whitesCount;
 
-        if (whitesCount === blacksCount) {
-            return 0;
-        }
+        // console.log('Piece difference for ' + (playerColor === BLACK ? 'black' : 'white') + ': B(' + blacksCount + '), W(' + whitesCount+ ')');
+        // console.log(currentPlayerCount / (blacksCount + whitesCount));
 
         return 100.0 * currentPlayerCount / (blacksCount + whitesCount);
 
@@ -251,8 +254,8 @@ class BoardState
         // return 100 * (blacksCount / (blacksCount + whitesCount));
     }
 
-    h() {
-        return this.getPieceDifference();
+    h(playerColor) {
+        return this.getPieceDifference(playerColor);
     }
 }
 

@@ -1,3 +1,31 @@
+var OthelloClient = require('./othello-client');
+var BoardState = require('./board-state');
+
+var coordinatorURL = 'http://192.168.0.101:4000';
+var tournamentID = 142857;
+
+function randInt(a, b) {
+  return parseInt(Math.floor(Math.random() * (b - a) + b));
+}
+
+var tileRep = ['_', 'X', 'O'],
+  N = 8;
+
+function humanBoard(board) {
+
+  var result = '    A  B  C  D  E  F  G  H';
+
+  for(var i = 0; i < board.length; i++){
+    if(i % N === 0){
+      result += '\n\n ' + (parseInt(Math.floor(i / N)) + 1) + ' ';
+    }
+
+    result += ' ' + tileRep[board[i]] + ' ';
+  }
+
+  return result;
+}
+
 console.log('Attempting to connect');
 
 var socketClient = require('socket.io-client')(coordinatorURL),
@@ -37,9 +65,9 @@ function play(data) {
   // Player color: data.player_turn_id: 1 (negro), 2 (blanco)
   console.log('Current player color: ' + data.player_turn_id);
   console.log('Current board: \n');
-  console.log(printBoardForHumans(data.board));
+  console.log(humanBoard(data.board));
 
-  var othello_client = new OthelloClient(3);
+  var othello_client = new OthelloClient(3, data.player_turn_id);
 
   var movement = othello_client.getMovement(data.board, data.player_turn_id);
 
@@ -54,3 +82,43 @@ function play(data) {
 }
 
 socketClient.on('ready', play);
+
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 2, 1, 0, 0, 0,
+//   0, 0, 0, 1, 2, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0
+// ]
+
+// var othello_client = new OthelloClient(3, 1);
+// var movement = othello_client.getMovement(
+//   [
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 2, 1, 0, 0, 0,
+//     0, 0, 0, 1, 2, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0
+//   ]
+// );
+
+// // var board = new BoardState([
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 2, 0, 0, 0, 0, 0,
+// //   0, 0, 1, 2, 1, 0, 0, 0,
+// //   0, 0, 0, 1, 1, 0, 0, 0,
+// //   0, 0, 0, 0, 1, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0
+// // ]);
+
+// // console.log(board.getValidMovements(2));
+
+// console.log('Movement: ' + movement);
