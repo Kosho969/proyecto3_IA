@@ -1,8 +1,8 @@
 var OthelloClient = require('./othello-client');
 var BoardState = require('./board-state');
 
-var coordinatorURL = 'http://192.168.0.101:4000';
-var tournamentID = 142857;
+var coordinatorURL = 'http://localhost:3000';
+var tournamentID = 12;
 
 function randInt(a, b) {
   return parseInt(Math.floor(Math.random() * (b - a) + b));
@@ -67,7 +67,7 @@ function play(data) {
   console.log('Current board: \n');
   console.log(humanBoard(data.board));
 
-  var othello_client = new OthelloClient(3, data.player_turn_id);
+  var othello_client = new OthelloClient(5, data.player_turn_id);
 
   var movement = othello_client.getMovement(data.board, data.player_turn_id);
 
@@ -122,3 +122,72 @@ socketClient.on('ready', play);
 // // console.log(board.getValidMovements(2));
 
 // console.log('Movement: ' + movement);
+
+
+
+
+
+// var OthelloClient = require('./othello-client');
+// var BoardState = require('./board-state');
+// // [
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 2, 1, 0, 0, 0,
+// //   0, 0, 0, 1, 2, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0
+// // ]
+
+// var ia_othello_client = new OthelloClient(5, 1);
+// var othello_client = new OthelloClient(2, 1);
+
+// othello_client.getMovement = function(boardState, playerTurnId)
+// {
+//   console.log('Supyo');
+
+//   var board = new BoardState(boardState);
+
+//   return board.getValidMovements(playerTurnId)[0];
+// }
+
+
+// // var board = new BoardState([
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 2, 0, 0, 0, 0, 0,
+// //   0, 0, 1, 2, 1, 0, 0, 0,
+// //   0, 0, 0, 1, 1, 0, 0, 0,
+// //   0, 0, 0, 0, 1, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0,
+// //   0, 0, 0, 0, 0, 0, 0, 0
+// // ]);
+
+// // console.log(board.getValidMovements(2));
+
+// console.log('Movement simple: ' + othello_client.getMovement(
+//   [
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 2, 0, 0, 0,
+//     0, 0, 1, 1, 2, 0, 0, 0,
+//     0, 0, 0, 1, 2, 1, 0, 0,
+//     0, 0, 0, 0, 2, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0
+//   ]
+// ));
+
+// console.log('Movement IA: ' + ia_othello_client.getMovement(
+//   [
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 2, 0, 0, 0,
+//     0, 0, 1, 1, 2, 0, 0, 0,
+//     0, 0, 0, 1, 2, 1, 0, 0,
+//     0, 0, 0, 0, 2, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0
+//   ]
+// ));

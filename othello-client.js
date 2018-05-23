@@ -16,7 +16,7 @@ class OthelloClient
     getMovement(boardState, playerTurnId)
     {
         var board = new BoardState(boardState);
-
+        console.log("CURRENT BOARD");
         board.printBoardForHumans();
 
         // var validMoves = board.getValidMovements(playerTurnId)
@@ -28,6 +28,7 @@ class OthelloClient
         // return movement
 
         // return ;
+        console.time("concatenation");
         var movement = this.getMaxValueMovement(
             board,
             0,
@@ -35,38 +36,49 @@ class OthelloClient
             Number.POSITIVE_INFINITY,
             null
         );
-
+        console.timeEnd("concatenation");
         console.log('');
         console.log('Returning movement: ' + movement[1] + ' with value ' + movement[0]);
+        if (movement[1] === null){
+        //    var validMoves = board.getValidMovements(playerTurnId);
 
-        return movement[1];
+        // var oneMove = validMoves[0];
+
+        // var movement = board.getIntFromXY(oneMove[0], oneMove[1]);
+
+        // return movement;
+        }
+        var move =  board.getIntFromXY(movement[1][0], movement[1][1]);
+        return  move
     }
 
     getMaxValueMovement(board, currentDepth, alpha, beta, movement)
     {
-        console.log(" ".repeat(currentDepth * 2) + '--- Into MAX value for currentDepth ' + currentDepth + ' and movement ' + movement);
+        // console.log(" ".repeat(currentDepth * 2) + '--- Into MAX value for currentDepth ' + currentDepth + ' and movement ' + movement);
 
         if (currentDepth === this.k) {
-            console.log(" ".repeat(currentDepth * 2) + 'returning h value (max)' + board.h(this.getCurrentPlayerColor()) + ' for movement: ' + movement);
+            // console.log(" ".repeat(currentDepth * 2) + 'returning h value (max)' + board.h(this.getCurrentPlayerColor()) + ' for movement: ' + movement);
 
             return [board.h(this.getCurrentPlayerColor()), movement];
         }
 
         var value = Number.NEGATIVE_INFINITY;
         var arista = null;
-        var validMovements = board.getValidMovements(this.currentPlayerColor);
+        var validMovements = board.getValidMovements(this.getCurrentPlayerColor());
+        //var validMovementsOpponent = board.getValidMovements(this.getOpponentPlayerColor());
 
         if (validMovements.length === 0) {
-            console.log(" ".repeat(currentDepth * 2) + 'No movements found');
+            //console.log(" ".repeat(currentDepth * 2) + 'No movements found');
             //board.printBoardForHumans();
-            console.log(board.state);
+            //console.log(board.state);
+            return [board.h(this.getCurrentPlayerColor()), movement];
         }
 
         for (var i = 0; i < validMovements.length; i++) {
             var possibleMovement = validMovements[i];
 
-            console.log(" ".repeat(currentDepth * 2) + '------------------------');
-            console.log(" ".repeat(currentDepth * 2) + 'Possible movement for ' + this.getCurrentPlayerColorLabel() + ': ' + possibleMovement);
+            // console.log(" ".repeat(currentDepth * 2) + '------------------------');
+            // console.log(" ".repeat(currentDepth * 2) + 'Possible movement for ' + this.getCurrentPlayerColorLabel() + ': ' + possibleMovement);
 
             var movementResultBoard = board.getBoardForMovement(
                 this.currentPlayerColor,
@@ -92,7 +104,7 @@ class OthelloClient
             }
 
             if (tuple[0] >= beta) {
-                console.log(" ".repeat(currentDepth * 2) + 'Returning because value ' + tuple[0] + ' >= beta');
+                // console.log(" ".repeat(currentDepth * 2) + 'Returning because value ' + tuple[0] + ' >= beta');
                 return [value, movement];
             }
 
@@ -101,35 +113,36 @@ class OthelloClient
             }
         }
 
-        console.log(" ".repeat(currentDepth * 2) + 'Returning because end for');
+        // console.log(" ".repeat(currentDepth * 2) + 'Returning because end for');
         return [value, movement];
     }
 
     getMinValueMovement(board, currentDepth, alpha, beta, movement)
     {
-        console.log(" ".repeat(currentDepth * 2) + '--- Into MIN value for currentDepth ' + currentDepth + ' and movement ' + movement);
+        // console.log(" ".repeat(currentDepth * 2) + '--- Into MIN value for currentDepth ' + currentDepth + ' and movement ' + movement);
 
         if (currentDepth === this.k) {
-            console.log(" ".repeat(currentDepth * 2) + 'returning h value (min)' + board.h(this.getCurrentPlayerColor()) + ' for movement: ' + movement);
+            // console.log(" ".repeat(currentDepth * 2) + 'returning h value (min)' + board.h(this.getCurrentPlayerColor()) + ' for movement: ' + movement);
 
             return [board.h(this.getCurrentPlayerColor()), movement];
         }
 
         var value = Number.POSITIVE_INFINITY;
-        var movement = movement;
         var validMovements = board.getValidMovements(this.getOpponentPlayerColor());
+        //var validMovementsOpponent = board.getValidMovements(this.getCurrentPlayerColor());
 
         if (validMovements.length === 0) {
-            console.log(" ".repeat(currentDepth * 2) + 'No movements found');
+            //console.log(" ".repeat(currentDepth * 2) + 'No movements found for '+this.getOpponentPlayerColorLabel());
             //board.printBoardForHumans();
-            console.log(board.state);
+            //console.log(board.state);
+            return [board.h(this.getCurrentPlayerColor()), movement];
         }
 
         for (var i = 0; i < validMovements.length; i++) {
             var possibleMovement = validMovements[i];
 
-            console.log(" ".repeat(currentDepth * 2) + '------------------------');
-            console.log(" ".repeat(currentDepth * 2) + 'Possible movement for ' + this.getOpponentPlayerColorLabel() + ': ' + possibleMovement);
+            // console.log(" ".repeat(currentDepth * 2) + '------------------------');
+            // console.log(" ".repeat(currentDepth * 2) + 'Possible movement for ' + this.getOpponentPlayerColorLabel() + ': ' + possibleMovement);
 
             var movementResultBoard = board.getBoardForMovement(
                 this.getOpponentPlayerColor(),
@@ -155,7 +168,7 @@ class OthelloClient
             }
 
             if (tuple[0] <= alpha) {
-                console.log(" ".repeat(currentDepth * 2) + 'Returning because value ' + tuple[0] + ' <= alpha');
+                // console.log(" ".repeat(currentDepth * 2) + 'Returning because value ' + tuple[0] + ' <= alpha');
                 return [value, movement];
             }
 
@@ -164,7 +177,7 @@ class OthelloClient
             }
         }
 
-        console.log(" ".repeat(currentDepth * 2) + 'Returning because end for');
+        // console.log(" ".repeat(currentDepth * 2) + 'Returning because end for');
         return [value, movement];
     }
 
@@ -187,6 +200,8 @@ class OthelloClient
     {
         return this.currentPlayerColor;
     }
+
+
 }
 
 module.exports = OthelloClient;

@@ -254,8 +254,38 @@ class BoardState
         // return 100 * (blacksCount / (blacksCount + whitesCount));
     }
 
+    getMobility(playerColor){
+        var oponentPlayerColor = this.getOpponentTileColor(playerColor);
+        //console.log("Current:"+ this.getValidMovements(playerColor).length)
+        //console.log("Opponent:"+ this.getValidMovements(oponentPlayerColor).length)
+        if (this.getValidMovements(playerColor).length === 0 && this.getValidMovements(oponentPlayerColor).length === 0){return 100}
+        return 100* this.getValidMovements(playerColor).length/(this.getValidMovements(playerColor).length + this.getValidMovements(oponentPlayerColor).length);
+    }
+
+    getCornerOccupancy(playerColor){
+        var oponentPlayerColor = this.getOpponentTileColor(playerColor);
+        var my_tiles = 0;
+        var opp_tiles = 0;
+        if(this.getTilePositionValue(0, 0) === playerColor){my_tiles = my_tiles + 1;}
+        else if(this.getTilePositionValue(0, 0) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
+        if(this.getTilePositionValue(0, 7) === playerColor){my_tiles = my_tiles + 1;}
+        else if(this.getTilePositionValue(0, 7) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
+        if(this.getTilePositionValue(7, 0) === playerColor){my_tiles = my_tiles + 1;}
+        else if(this.getTilePositionValue(7, 0) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
+        if(this.getTilePositionValue(7, 7) === playerColor){my_tiles = my_tiles + 1;}
+        else if(this.getTilePositionValue(7, 7) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
+        return 25 * (my_tiles - opp_tiles);
+    }
+
     h(playerColor) {
-        return this.getPieceDifference(playerColor);
+        var p = this.getPieceDifference(playerColor);
+        var m = this.getMobility(playerColor);
+        var c = this.getCornerOccupancy(playerColor);
+        // console.log("Piece: "+p);
+        // console.log("Mov: "+m);
+        // console.log("Corner: "+c)
+        // console.log("Valuue: "+((0.1 * p) + (0.7 * m) + (1 * c) ));
+        return ((0.1 * p) + (0.7 * m) + (1 * c));
     }
 }
 
