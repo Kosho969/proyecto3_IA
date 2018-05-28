@@ -223,12 +223,9 @@ class BoardState
     }
 
     /**
-     * Porcentaje de piezas de playerColor con respecto al total.
+     * Devuelve el porcentaje de piezas de playerColor con respecto al total.
      *
-     * PRE:
-     * Positive values mean blacks are ahead.
-     * Negative values mean whites are ahead.
-     *
+     * Mientras más grande el porcentaje, mejor.
      */
     getPieceDifference(playerColor) {
         var blacksCount = this.state
@@ -240,52 +237,254 @@ class BoardState
             .length;
 
         var currentPlayerCount = playerColor === BLACK ? blacksCount : whitesCount;
+        var opponentPlayerCount = playerColor === BLACK ? whitesCount : blacksCount;
 
-        // console.log('Piece difference for ' + (playerColor === BLACK ? 'black' : 'white') + ': B(' + blacksCount + '), W(' + whitesCount+ ')');
-        // console.log(currentPlayerCount / (blacksCount + whitesCount));
+        var p = 0;
 
-        return 100.0 * currentPlayerCount / (blacksCount + whitesCount);
+        if (currentPlayerCount > opponentPlayerCount) {
+            p = (100.0 * currentPlayerCount)
+                / (currentPlayerCount + opponentPlayerCount);
+        } else if (currentPlayerCount < opponentPlayerCount) {
+            p = - (100.0 * opponentPlayerCount)
+                / (currentPlayerCount + opponentPlayerCount);
+        } else {
+            p = 0;
+        }
 
-        // PRE
-        // if (whitesCount > blacksCount) {
-        //     return -100 * (whitesCount / (blacksCount + whitesCount));
+        return p;
+        // return 100.0 * currentPlayerCount / (blacksCount + whitesCount);
+    }
+
+    /**
+     * Devuelve el porcentaje de posibles movimientos de playerColor con
+     * respecto al total de posibles movimientos de ambos jugadores.
+     *
+     */
+    getMobility(playerColor) {
+        var opponentPlayerColor = this.getOpponentTileColor(playerColor);
+
+        var currentPlayerMovements = this.getValidMovements(playerColor).length;
+        var opponentPlayerMovements = this.getValidMovements(opponentPlayerColor).length;
+
+        var m = 0;
+
+        if (currentPlayerMovements > opponentPlayerMovements) {
+            m = (100.0 * currentPlayerMovements)
+                / (currentPlayerMovements + opponentPlayerMovements);
+        } else if (currentPlayerMovements < opponentPlayerMovements)
+            m = - (100.0 * opponentPlayerMovements)
+                /(currentPlayerMovements + opponentPlayerMovements);
+        else {
+            m = 0;
+        }
+
+        return m;
+
+        // if (
+        //     this.getValidMovements(playerColor).length === 0
+        //         && this.getValidMovements(opponentPlayerColor).length === 0
+        // ) {
+        //     return 100;
         // }
 
-        // return 100 * (blacksCount / (blacksCount + whitesCount));
+        // return 100
+        //     * this.getValidMovements(playerColor).length
+        //     / (
+        //         this.getValidMovements(playerColor).length
+        //             + this.getValidMovements(oponentPlayerColor).length
+        //     );
     }
 
-    getMobility(playerColor){
-        var oponentPlayerColor = this.getOpponentTileColor(playerColor);
-        //console.log("Current:"+ this.getValidMovements(playerColor).length)
-        //console.log("Opponent:"+ this.getValidMovements(oponentPlayerColor).length)
-        if (this.getValidMovements(playerColor).length === 0 && this.getValidMovements(oponentPlayerColor).length === 0){return 100}
-        return 100* this.getValidMovements(playerColor).length/(this.getValidMovements(playerColor).length + this.getValidMovements(oponentPlayerColor).length);
-    }
-
-    getCornerOccupancy(playerColor){
+    /**
+     * Devuelve el porcentaje de esquinas apropiadas por playerColor
+     * con respecto al total de esquinas (4).
+     *
+     */
+    getCornerOccupancy(playerColor) {
         var oponentPlayerColor = this.getOpponentTileColor(playerColor);
         var my_tiles = 0;
         var opp_tiles = 0;
-        if(this.getTilePositionValue(0, 0) === playerColor){my_tiles = my_tiles + 1;}
-        else if(this.getTilePositionValue(0, 0) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
-        if(this.getTilePositionValue(0, 7) === playerColor){my_tiles = my_tiles + 1;}
-        else if(this.getTilePositionValue(0, 7) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
-        if(this.getTilePositionValue(7, 0) === playerColor){my_tiles = my_tiles + 1;}
-        else if(this.getTilePositionValue(7, 0) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
-        if(this.getTilePositionValue(7, 7) === playerColor){my_tiles = my_tiles + 1;}
-        else if(this.getTilePositionValue(7, 7) === oponentPlayerColor){opp_tiles = opp_tiles + 1;}
+
+        if (this.getTilePositionValue(0, 0) === playerColor) {
+            my_tiles = my_tiles + 1;
+        } else if (this.getTilePositionValue(0, 0) === oponentPlayerColor){
+            opp_tiles = opp_tiles + 1;
+        }
+
+        if (this.getTilePositionValue(0, 7) === playerColor) {
+            my_tiles = my_tiles + 1;
+        } else if (this.getTilePositionValue(0, 7) === oponentPlayerColor){
+            opp_tiles = opp_tiles + 1;
+        }
+
+        if (this.getTilePositionValue(7, 0) === playerColor) {
+            my_tiles = my_tiles + 1;
+        } else if (this.getTilePositionValue(7, 0) === oponentPlayerColor){
+            opp_tiles = opp_tiles + 1;
+        }
+
+        if (this.getTilePositionValue(7, 7) === playerColor) {
+            my_tiles = my_tiles + 1;
+        } else if (this.getTilePositionValue(7, 7) === oponentPlayerColor){
+            opp_tiles = opp_tiles + 1;
+        }
+
         return 25 * (my_tiles - opp_tiles);
     }
 
+    getCornerCloseness(playerColor) {
+        var oponentPlayerColor = this.getOpponentTileColor(playerColor);
+        var my_tiles = 0;
+        var opp_tiles = 0;
+
+        if (this.getTilePositionValue(0, 0) == 0) {
+            if (this.getTilePositionValue(0, 1) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(0, 1) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(1, 1) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(1, 1) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(1, 0) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(1, 0) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+        }
+
+        if (this.getTilePositionValue(0, 7) == 0) {
+            if (this.getTilePositionValue(0, 6) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(0, 6) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(1, 6) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(1, 6) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(1, 7) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(1, 7) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+        }
+
+        if (this.getTilePositionValue(7, 0) == 0) {
+            if (this.getTilePositionValue(7, 1) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(7, 1) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(6, 1) == playerColor) {
+                my_tiles = my_tiles +1;
+            } else if (this.getTilePositionValue(6, 1) == oponentPlayerColor){
+                opp_tiles = opp_tiles +1;
+            }
+
+            if (this.getTilePositionValue(6, 0) == playerColor) {
+                my_tiles = my_tiles +1;
+            } else if (this.getTilePositionValue(6, 0) == oponentPlayerColor){
+                opp_tiles = opp_tiles +1;
+            }
+        }
+
+        if (this.getTilePositionValue(7, 7) == 0) {
+            if (this.getTilePositionValue(6, 7) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(6, 7) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(6, 6) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(6, 6) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+
+            if (this.getTilePositionValue(7, 6) == playerColor) {
+                my_tiles = my_tiles + 1;
+            } else if (this.getTilePositionValue(7, 6) == oponentPlayerColor){
+                opp_tiles = opp_tiles + 1;
+            }
+        }
+
+        return -12.5 * (my_tiles - opp_tiles);
+    }
+
+    getFrontierDiscsCount(playerColor)
+    {
+        var X1 = [0, 1, 1, 1, 0, -1, -1, -1];
+        var Y1 = [-1, -1, 0, 1, 1, 1, 0, -1];
+
+        var currentFrontTileCount = 0;
+        var opponentFrontTileCount = 0;
+
+        for (var i=0; i<8; i++) {
+            for (var j=0; j<8; j++) {
+                if (this.getTilePositionValue(i, j) != 0) {
+                    for (var k=0; k<8; k++) {
+                        var x = i + X1[k];
+                        var y = j + Y1[k];
+
+                        if (x >= 0 && x < 8 && y >= 0 && y < 8 && this.getTilePositionValue(x, y) == 0) {
+                            if (this.getTilePositionValue(i, j) == playerColor)
+                                currentFrontTileCount++;
+                            else
+                                opponentFrontTileCount++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (currentFrontTileCount > opponentFrontTileCount) {
+            return - (100.0 * currentFrontTileCount)
+                /(currentFrontTileCount + opponentFrontTileCount);
+        } else if (currentFrontTileCount < opponentFrontTileCount) {
+            return (100.0 * opponentFrontTileCount)
+                /(currentFrontTileCount + opponentFrontTileCount);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     *
+     *
+     */
     h(playerColor) {
-        var p = this.getPieceDifference(playerColor);
-        var m = this.getMobility(playerColor);
-        var c = this.getCornerOccupancy(playerColor);
-        // console.log("Piece: "+p);
-        // console.log("Mov: "+m);
-        // console.log("Corner: "+c)
-        // console.log("Valuue: "+((0.1 * p) + (0.7 * m) + (1 * c) ));
-        return ((0.1 * p) + (0.7 * m) + (1 * c));
+        // double score =
+            // (10 * p)
+            // + (801.724 * c)
+            // + (382.026 * l)
+            // + (78.922 * m)
+            // + (74.396 * f)
+            // + (10 * d);
+
+        // De acuerdo con los datos experimentales, corner closeness
+        // conviene cuando yo soy el negro
+        // TODO: Validar e implementar
+
+        var score = 0;
+        // if (playerColor === BLACK){
+        //     score = score + (3.0 * this.getCornerCloseness(playerColor))
+        // }
+        score = score + (0.1 * this.getPieceDifference(playerColor))
+            + (8.0 * this.getCornerOccupancy(playerColor))
+            + (0.7 * this.getMobility(playerColor))
+            + (0.7 * this.getFrontierDiscsCount(playerColor))
+            ;
+        return score;
     }
 }
 

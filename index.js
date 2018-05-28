@@ -1,5 +1,7 @@
 var OthelloClient = require('./othello-client');
-var BoardState = require('./board-state');
+
+// var coordinatorURL = 'http://192.168.0.107:4000';
+// var tournamentID = 142857;
 
 var coordinatorURL = 'http://localhost:3000';
 var tournamentID = 12;
@@ -29,7 +31,7 @@ function humanBoard(board) {
 console.log('Attempting to connect');
 
 var socketClient = require('socket.io-client')(coordinatorURL),
-    userName = 'Koch_AI--'+ randInt(0, 63);
+  userName = process.env.USER_NAME || 'Koch_AI--'+ randInt(0, 63);
 
 socketClient.on('connect', function() {
 
@@ -67,7 +69,7 @@ function play(data) {
   console.log('Current board: \n');
   console.log(humanBoard(data.board));
 
-  var othello_client = new OthelloClient(6, data.player_turn_id);
+  var othello_client = new OthelloClient(5, data.player_turn_id);
 
   var movement = othello_client.getMovement(data.board, data.player_turn_id);
 
@@ -107,6 +109,8 @@ socketClient.on('ready', play);
 //     0, 0, 0, 0, 0, 0, 0, 0
 //   ]
 // );
+
+// var BoardState = require('./board-state');
 
 // // var board = new BoardState([
 // //   0, 0, 0, 0, 0, 0, 0, 0,
