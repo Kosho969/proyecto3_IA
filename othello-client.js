@@ -53,9 +53,13 @@ class OthelloClient
         var validMovements = board.getValidMovements(this.getCurrentPlayerColor());
 
         if (validMovements.length === 0) {
-
+            var validMovementsOpponent = board.getValidMovements(this.getOpponentPlayerColor());
+            // End game solver
             // TODO: Si el otro jugador tampoco tiene movidas disponibles,
             // devolver piece difference en lugar de heurística
+            // if(validMovementsOpponent.length === 0 ){
+            //     return [board.getPieceDifference(this.getCurrentPlayerColor()), movement];
+            // }
 
 
             return [board.h(this.getCurrentPlayerColor()), movement];
@@ -109,11 +113,13 @@ class OthelloClient
         var validMovements = board.getValidMovements(this.getOpponentPlayerColor());
 
         if (validMovements.length === 0) {
-
+            var validMovementsOpponent = board.getValidMovements(this.getCurrentPlayerColor());
             // End game solver
             // TODO: Si el otro jugador tampoco tiene movidas disponibles,
             // devolver piece difference en lugar de heurística
-
+            // if(validMovementsOpponent.length === 0 ){
+            //     return [board.getPieceDifference(this.getCurrentPlayerColor()), movement];
+            // }
 
 
             return [board.h(this.getCurrentPlayerColor()), movement];

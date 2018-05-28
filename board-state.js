@@ -476,14 +476,19 @@ class BoardState
         // TODO: Validar e implementar
 
         var score = 0;
-        // if (playerColor === BLACK){
-        //     score = score + (3.0 * this.getCornerCloseness(playerColor))
-        // }
+        if (playerColor === BLACK){
+            score = score + (3.0 * this.getCornerCloseness(playerColor))
+                + (0.1 * this.getPieceDifference(playerColor))
+            + (8.0 * this.getCornerOccupancy(playerColor))
+            + (0.7 * this.getMobility(playerColor))
+        }
+        else{
         score = score + (0.1 * this.getPieceDifference(playerColor))
             + (8.0 * this.getCornerOccupancy(playerColor))
             + (0.7 * this.getMobility(playerColor))
             + (0.7 * this.getFrontierDiscsCount(playerColor))
             ;
+        }
         return score;
     }
 }
