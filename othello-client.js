@@ -57,9 +57,9 @@ class OthelloClient
             // End game solver
             // TODO: Si el otro jugador tampoco tiene movidas disponibles,
             // devolver piece difference en lugar de heurística
-            // if(validMovementsOpponent.length === 0 ){
-            //     return [board.getPieceDifference(this.getCurrentPlayerColor()), movement];
-            // }
+            if(validMovementsOpponent.length === 0 ){
+                return [board.getPieceDifference(this.getCurrentPlayerColor()), movement];
+            }
 
 
             return [board.h(this.getCurrentPlayerColor()), movement];
@@ -117,9 +117,9 @@ class OthelloClient
             // End game solver
             // TODO: Si el otro jugador tampoco tiene movidas disponibles,
             // devolver piece difference en lugar de heurística
-            // if(validMovementsOpponent.length === 0 ){
-            //     return [board.getPieceDifference(this.getCurrentPlayerColor()), movement];
-            // }
+            if(validMovementsOpponent.length === 0 ){
+                return [board.getPieceDifference(this.getCurrentPlayerColor()), movement];
+            }
 
 
             return [board.h(this.getCurrentPlayerColor()), movement];

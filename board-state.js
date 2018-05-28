@@ -481,6 +481,8 @@ class BoardState
                 + (0.1 * this.getPieceDifference(playerColor))
             + (8.0 * this.getCornerOccupancy(playerColor))
             + (0.7 * this.getMobility(playerColor))
+            +  (0.7 * this.getFrontierDiscsCount(playerColor))
+            ;
         }
         else{
         score = score + (0.1 * this.getPieceDifference(playerColor))
