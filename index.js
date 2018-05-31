@@ -3,8 +3,12 @@ var OthelloClient = require('./othello-client');
 // var coordinatorURL = 'http://192.168.0.107:4000';
 // var tournamentID = 142857;
 
-var coordinatorURL = 'http://localhost:3000';
-var tournamentID = 12;
+// var coordinatorURL = 'http://localhost:3000';
+// var tournamentID = 12;
+
+var coordinatorURL = 'http://192.168.1.142:4000';
+var tournamentID = 142857;
+
 
 function randInt(a, b) {
   return parseInt(Math.floor(Math.random() * (b - a) + b));
@@ -31,7 +35,7 @@ function humanBoard(board) {
 console.log('Attempting to connect');
 
 var socketClient = require('socket.io-client')(coordinatorURL),
-  userName = process.env.USER_NAME || 'Koch_AI--'+ randInt(0, 63);
+  userName = process.env.USER_NAME || 'Koch';
 
 socketClient.on('connect', function() {
 
